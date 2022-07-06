@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MAC Weather Station</title>
+    <link rel="icon" href=""> <!-- should add favicon  -->
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="css/custom.css">
+
+    <!-- update the version number as needed -->
+    <script defer src="/__/firebase/8.4.2/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/8.4.2/firebase-database.js"></script>
+    <!-- initialize the SDK after all desired features are loaded -->
+    <script defer src="/__/firebase/init.js"></script>
+    <!-- firebase.database().ref('/path/to/ref').on('value', snapshot => { }); -->
+    
+    <!-- Awesome icon -->
+    <script src="https://kit.fontawesome.com/1f8fcc82f7.js" crossorigin="anonymous"></script>
+    <!-- Boostrap File -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <!------------------------Styling------------------------->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300&display=swap');
+    </style>
+</head>
+
+
+<body style="background: url(images/back.jpg); background-position: center;background-repeat: repeat;background-size: cover;">
+<!------------------------Page Layout Content------------------------->
+<header>
+    <h1>Real Time Weather Station</h1>
+</header>
+
+<div class="container" style="margin-top: 2%;">
+    <div class="row gx-5">
+        <div class="col-md-4" style="height: 180px;">
+        <div style="height: 150px;
+        background-color: whitesmoke;
+        border-radius: 15px;
+        box-shadow: 2px 2px 10px black;">
+            <h2 style="text-align: center;">Temperature</h2>
+            <img src="images/temp.png" class="im">
+        </div>
+    </div>
+    <div class="col-md-4" style="height: 180px;">
+        <div style="height: 150px;
+        background-color: whitesmoke;
+        border-radius: 15px;
+        box-shadow: 2px 2px 10px black;">
+    <h2>Humidity</h2>
+    <img src="images/hum.png" class="im"></div>
+</div>
+<div class="col-md-4" style="height: 180px;">
+        <div style="height: 150px;
+        background-color: whitesmoke;
+        border-radius: 15px;
+        box-shadow: 2px 2px 10px black;">
+    <h2>Pressure</h2>
+    <img src="images/pre.png" class="im"></div>
+</div>
+<div class="col-md-4"style="height: 180px;">
+    <div style="height: 150px;
+        background-color: whitesmoke;
+        border-radius: 15px;
+        box-shadow: 2px 2px 10px black;">
+    <h2>Wind Speed</h2>
+    <img src="images/wind.png" class="im"></div>
+</div>
+<div class="col-md-4"style="height: 180px;">
+    <div style="height: 150px;
+        background-color: whitesmoke;
+        border-radius: 15px;
+        box-shadow: 2px 2px 10px black;">
+    <h2>Altitude</h2>
+    <img src="images/alti.png" class="im"></div>
+</div>
+<div class="col-md-4"style="height: 180px;">
+    <div style="height: 150px;
+        background-color: whitesmoke;
+        border-radius: 15px;
+        box-shadow: 2px 2px 10px black;">
+    <h2>UV</h2>
+    <img src="images/uv.png" class="im"></div>
+</div>
+<div class="col-md-4"style="height: 180px;">
+    <div style="height: 150px;
+        background-color: whitesmoke;
+        border-radius: 15px;
+        box-shadow: 2px 2px 10px black;">
+    <h2>Light</h2>
+    <img src="images/light.png" class="im"></div>
+</div>
+</div> 
+</div>
+
+<!-- <p id="connectionState">Connecting to server....!</p> -->
+
+<!--First panel-->
+<!-- <div class="panel 1">-->
+        <!-- <div class="userPanel">
+            <h3 class="texts">Control GPIOs</h3>-->
+            <!--button to toggle-->
+            <!--<div class="toggle">
+                <h4>Toggle</h4>
+                <label class="switch">
+                    <input type="checkbox" id="button">
+                    <span class="key round"></span>
+                </label>
+                <div id='buttonval'></div>
+            </div>-->
+            <!--slider to adjust-->
+            <!-- <div class="slider">
+                <h4>Adjust</h4>
+                <input type="range" id="slidervalue" name="slidervalue" min="0" max="1023">
+                <div id='sliderval'></div>
+            </div>
+        </div> 
+        <h3 class="texts">Weather Broadcast</h3>
+        <div class="mcuPanel">
+            Gauge to show readings
+            <div class="gauge">
+                <h4>Reading</h4>
+                <div id="gaugeMinVal"></div>
+                <meter id="rangeval" value="512" min="0" max="1023"></meter>
+                <div id="gaugeMaxVal"></div>
+                <br>
+                <div id="gaugeReading"></div>
+            </div> -->
+            <!-- <div class="state">
+                <h4>State</h4>
+                <div id="statebox">True</div>
+            </div> 
+        </div>
+    </div> -->
+
+    <footer>
+        <p>&copy; Mar Augusthinose College Weather Station</p>
+    </footer>
+    <!------------------------Page Layout Content------------------------->
+
+
+
+    <!------------------------Scripting------------------------->
+    <script>
+        // The output objects
+        const button = document.getElementById("button");
+        const slider = document.getElementById("slidervalue");
+
+        //  Objects to display the value
+        const outputSlider = document.getElementById("sliderval");
+        const outputSwitch = document.getElementById("buttonval");
+
+        const outputGauge = document.getElementById("rangeval");
+        const gaugeMinVal = document.getElementById("gaugeMinVal");
+        const gaugeMaxVal = document.getElementById("gaugeMaxVal");
+        const gaugeReading = document.getElementById("gaugeReading");
+
+        const outputState = document.getElementById("statebox");
+        const connectionState = document.getElementById("connectionState");
+
+        /*==================Functions===================*/
+        function setOutputState(state_value){
+            outputState.innerHTML = state_value;
+            if (state_value)
+                outputState.style.backgroundColor = "#67bd5f";
+            else
+                outputState.style.backgroundColor = "#606164";
+        }
+
+        /*===== Firebase Methods =====*/
+        document.addEventListener("DOMContentLoaded", () => {
+            console.log(firebase);
+            const database = firebase.database();
+
+            //  When the HTML body loads for the first time
+            document.body.onload = () => {
+                outputSlider.innerHTML = slider.value; // Display the default slider value
+                outputSwitch.innerHTML = button.checked ? "on" : "off"; // Display the default button value
+                gaugeMinVal.innerHTML = outputGauge.min;
+                gaugeMaxVal.innerHTML = outputGauge.max;
+                gaugeReading.innerHTML = outputGauge.value;
+                document.getElementsByClassName("panel").hidden = true;
+            }
+
+            //   flag
+            var firstLoad = true;
+
+            updateView = (data) => {
+                // The State box
+                setOutputState(data.Inputs.D0);
+                // The Reading Gauge
+                outputGauge.value = data.Inputs.A0;
+                gaugeReading.innerHTML = outputGauge.value;
+                // The Toggle Switch
+                button.checked = data.Keys.state;
+                outputSwitch.innerHTML = button.checked ? "on" : "off";
+                // The Adjust Slider
+                slider.value = data.Keys.level;
+                outputSlider.innerHTML = slider.value;
+            };
+
+            updateDatabase = () => {
+                var data = {
+                    level: Number(slider.value),
+                    state: button.checked,
+                };
+                //  Show the state on the page
+                outputSwitch.innerHTML = button.checked ? "on" : "off";
+                //  Show the level on the page
+                outputSlider.innerHTML = slider.value;
+                console.log(data);
+                console.log(database.ref("/devices/Keys").update(data));
+            };
+
+            removeConnectingMsg = () => {
+                connectionState.hidden = true;
+                document.getElementsByClassName("panel").hidden = false;
+            };
+
+            // event listeners
+            button.addEventListener("change", (event) => updateDatabase());
+            slider.addEventListener("change", (event) => updateDatabase());
+            slider.oninput = () => {
+                outputSlider.innerHTML = slider.value;
+            }
+
+            // database event listeners
+            const keysRef = database.ref("/devices");
+            keysRef.on("value", (snap) => {
+                const data = snap.val();
+                console.log(data);
+                if (firstLoad) {
+                    removeConnectingMsg();
+                    firstLoad = false;
+                }
+                updateView(data);
+            });
+        });
+        /*====================*/
+    </script>
+    <!------------------------Scripting------------------------->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+</body>
+</html>

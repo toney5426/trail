@@ -1,0 +1,21 @@
+.outer{
+	margin-top: 10%;
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+}
+.inner{
+	height: 250px;
+	width: 250px;
+	background-color: whitesmoke;
+	float: left;
+	border-radius: 10px;
+	font-family: 'Chakra Petch', sans-serif;
+
+}
+.im{
+	height: 50px;
+	float: left;
+	margin-left: 20%;
+	margin-top: 5%;
+}
